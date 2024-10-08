@@ -8,7 +8,9 @@ const auth = require('./middleware/auth');
 const Paper = require('./models/Paper');  // Import the Paper model
 const Review = require('./models/Review');  // Import the Review model
 const path = require('path');
+
 const authRoutes = require('./routes/auth');
+app.use('/auth', authRoutes);  // Remove this line if you're not using it
 const paperRoutes = require('./routes/papers');
 const reviewRoutes = require('./routes/reviews');
 
