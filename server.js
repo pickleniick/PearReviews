@@ -7,6 +7,16 @@ const User = require('./models/User');  // Import the User model
 const auth = require('./middleware/auth');
 const Paper = require('./models/Paper');  // Import the Paper model
 const Review = require('./models/Review');  // Import the Review model
+const path = require('path');
+const authRoutes = require('./routes/auth');
+const paperRoutes = require('./routes/papers');
+const reviewRoutes = require('./routes/reviews');
+
+app.use('/auth', authRoutes);
+app.use('/papers', paperRoutes);
+app.use('/reviews', reviewRoutes);
+
+
 
 const app = express();
 
@@ -15,7 +25,7 @@ app.use(express.json());
 
 // MongoDB connection
 const dbURI = 'mongodb+srv://nxlarue:pearreviews12345@pearreviewscluster.mu8nb.mongodb.net/?retryWrites=true&w=majority&appName=PearReviewsCluster';
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dbURI)
   .then(() => console.log('Connected to MongoDB'))
   .catch((err) => console.error('MongoDB connection error:', err));
 
@@ -68,17 +78,6 @@ app.post('/login', async (req, res) => {
     console.error(err.message);
     res.status(500).send('Server error');
   }
-});
-
-// Basic route to test the server
-app.get('/', (req, res) => {
-  res.send('Welcome to PearReviews!');
-});
-
-// Set up the server to listen on a port
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
 });
 
 
@@ -227,3 +226,17 @@ app.get('/profile', auth, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+
+
+
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Root route to serve the index.html file
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
